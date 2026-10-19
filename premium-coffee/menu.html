@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тёплый угол — Карта вкусов</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">Тёплый угол</a>
+      <nav>
+        <a href="index.html">Главная</a>
+        <a href="menu.html" class="active">Меню</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="menu-header reveal">
+    <h1>Карта вкусов</h1>
+    <p>Тщательно подобранные сорта для вашего идеального утра</p>
+  </div>
+
+  <div class="filters reveal">
+    <button class="filter-btn active" data-filter="all">Всё меню</button>
+    <button class="filter-btn" data-filter="coffee">Кофе</button>
+    <button class="filter-btn" data-filter="not-coffee">Альтернатива</button>
+    <button class="filter-btn" data-filter="food">Выпечка</button>
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-item reveal" data-category="coffee">
+      <div class="menu-item-info">
+        <div class="menu-item-header">
+          <h3>Эспрессо «Терра»</h3>
+          <div class="menu-item-dots"></div>
+          <span class="price">150 ₽</span>
+        </div>
+        <p>Плотное тело, ноты черной смородины и горького шоколада. Подается со стаканом холодной воды.</p>
+      </div>
+    </div>
+
+    <div class="menu-item reveal" data-category="coffee">
+      <div class="menu-item-info">
+        <div class="menu-item-header">
+          <h3>Капучино</h3>
+          <div class="menu-item-dots"></div>
+          <span class="price">220 ₽</span>
+        </div>
+        <p>Идеальный баланс эспрессо и бархатной молочной пены. Подается в фарфоровой чашке.</p>
+      </div>
+    </div>
+
+    <div class="menu-item reveal" data-category="coffee">
+      <div class="menu-item-info">
+        <div class="menu-item-header">
+          <h3>Раф на сливках</h3>
+          <div class="menu-item-dots"></div>
+          <span class="price">280 ₽</span>
+        </div>
+        <p>Нежный, с легкой ванильной сладостью и щепоткой кардамона.</p>
+      </div>
+    </div>
+
+    <div class="menu-item reveal" data-category="not-coffee">
+      <div class="menu-item-info">
+        <div class="menu-item-header">
+          <h3>Матча с миндалем</h3>
+          <div class="menu-item-dots"></div>
+          <span class="price">260 ₽</span>
+        </div>
+        <p>Церемониальная японская матча на миндальном молоке. Травянистая свежесть.</p>
+      </div>
+    </div>
+
+    <div class="menu-item reveal" data-category="food">
+      <div class="menu-item-info">
+        <div class="menu-item-header">
+          <h3>Круассан с миндалем</h3>
+          <div class="menu-item-dots"></div>
+          <span class="price">190 ₽</span>
+        </div>
+        <p>Хрустящая корочка, слоистое тесто на французском масле и нежный крем франжипан.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="index.html" class="logo">Тёплый угол</a>
+      <p>Москва, ул. Тёплая, 14 &nbsp;&bull;&nbsp; +7 (495) 123-45-67</p>
+      <div class="footer-links">
+        <a href="index.html">Главная</a>
+        <a href="menu.html">Меню</a>
+        <a href="contacts.html">Контакты</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Логика фильтрации
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filterValue = btn.getAttribute('data-filter');
+
+        menuItems.forEach(item => {
+          if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+            item.style.display = 'flex';
+            // Небольшая задержка для анимации появления
+            setTimeout(() => item.classList.add('visible'), 50);
+          } else {
+            item.style.display = 'none';
+            item.classList.remove('visible');
+          }
+        });
+      });
+    });
+
+    // Анимация появления при скролле
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    document.querySelectorAll('.reveal').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

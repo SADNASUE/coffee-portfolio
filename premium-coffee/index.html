@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тёплый угол — Философия вкуса</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">Тёплый угол</a>
+      <nav>
+        <a href="index.html" class="active">Главная</a>
+        <a href="menu.html">Меню</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text reveal">
+      <h1>Утро, которое <em>стоит</em> замедлить</h1>
+      <p>Здесь не готовят кофе на бегу. Мы создали пространство на веранде, где время течет иначе, а каждый глоток эспрессо — это маленький ритуал.</p>
+      <a href="menu.html" class="link-arrow">Открыть карту вкусов <span>&rarr;</span></a>
+    </div>
+    <div class="hero-img reveal delay-1">
+      <div class="hero-img-caption">Веранда. Утренний свет. Свежая выпечка.</div>
+    </div>
+  </section>
+
+  <section class="philosophy reveal">
+    <p>«Настоящий кофе не терпит суеты. Мы обжариваем зёрна небольшими партиями, чтобы вы могли почувствовать терруар, ноты спелых ягод и глубокий шоколадный финиш. Возьмите чашечку, отогните мизинчик и просто побудьте здесь.»</p>
+  </section>
+
+  <section class="invitation reveal">
+    <h2>Приглашаем на дегустацию</h2>
+    <p>Забронируйте столик у окна или на веранде, чтобы насладиться тишиной и безупречным вкусом.</p>
+    <a href="contacts.html" class="link-arrow">Забронировать визит <span>&rarr;</span></a>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="index.html" class="logo">Тёплый угол</a>
+      <p>Москва, ул. Тёплая, 14 &nbsp;&bull;&nbsp; +7 (495) 123-45-67 &nbsp;&bull;&nbsp; 08:00 – 22:00</p>
+      <div class="footer-links">
+        <a href="index.html">Главная</a>
+        <a href="menu.html">Меню</a>
+        <a href="contacts.html">Контакты</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт для анимации появления -->
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // Анимируем только один раз
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    });
+
+    document.querySelectorAll('.reveal').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

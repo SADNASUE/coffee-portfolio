@@ -1,0 +1,645 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #F5F3EC; 
+  --surface: #FAF9F6;
+  --text: #1A1817; 
+  --muted: #6A645E; 
+  --accent: #6A4A3C; 
+  --accent-light: #E8DFD3;
+  --border: 1px solid #D1CBBF;
+  --font-head: 'Cormorant Garamond', serif;
+  --font-body: 'Lora', serif;
+  --font-ui: 'Montserrat', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  position: relative;
+}
+
+/* Водяной знак на фоне */
+body::before {
+  content: "T";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-head);
+  font-size: 80vw;
+  color: rgba(106, 74, 60, 0.02);
+  z-index: -1;
+  pointer-events: none;
+  line-height: 1;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* ===== ШАПКА ===== */
+header {
+  border-bottom: var(--border);
+  padding: 32px 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-family: var(--font-head);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+  flex: 1;
+}
+
+nav {
+  display: flex;
+  gap: 40px;
+  flex: 2;
+  justify-content: flex-end;
+}
+
+nav a {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+nav a:hover, nav a.active {
+  color: var(--text);
+}
+
+nav a:hover::after, nav a.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ===== ГЛАВНАЯ (INDEX) ===== */
+.hero {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 120px 40px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.hero-text {
+  padding-right: 40px;
+}
+
+.hero-text h1 {
+  font-size: clamp(56px, 7vw, 96px);
+  margin-bottom: 32px;
+  color: var(--text);
+  letter-spacing: -1px;
+}
+
+.hero-text h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-text p {
+  font-size: 20px;
+  color: var(--muted);
+  margin-bottom: 48px;
+  max-width: 500px;
+}
+
+.link-arrow {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 6px;
+  position: relative;
+}
+
+.link-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--text);
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s;
+}
+
+.link-arrow span {
+  transition: transform 0.3s ease;
+}
+
+.link-arrow:hover {
+  color: var(--accent);
+}
+
+.link-arrow:hover::after {
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+.link-arrow:hover span {
+  transform: translateX(6px);
+}
+
+.hero-img {
+  width: 100%;
+  height: 650px;
+  background: var(--accent-light);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.8s;
+}
+
+.hero-img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+}
+
+.hero-img::before {
+  content: "☕";
+  font-size: 120px;
+  opacity: 0.4;
+  filter: sepia(1) contrast(0.8);
+  transition: transform 0.8s ease;
+}
+
+.hero-img:hover::before {
+  transform: scale(1.1);
+}
+
+.hero-img-caption {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.philosophy {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 140px 40px;
+  text-align: center;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  position: relative;
+}
+
+.philosophy::before {
+  content: "“";
+  font-family: var(--font-head);
+  font-size: 200px;
+  color: var(--accent-light);
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 1;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.philosophy p {
+  font-size: 32px;
+  font-family: var(--font-head);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text); 
+  line-height: 1.4;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.invitation {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 160px 40px;
+  text-align: center;
+}
+
+.invitation h2 {
+  font-size: 48px;
+  margin-bottom: 24px;
+}
+
+.invitation p {
+  color: var(--muted);
+  margin-bottom: 48px;
+  font-size: 18px;
+}
+
+/* ===== СТРАНИЦА МЕНЮ ===== */
+.menu-header {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 100px 40px 60px;
+  text-align: center;
+}
+
+.menu-header h1 {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.menu-header p {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 80px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 12px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  transition: all 0.4s;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+.menu-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.menu-item-info h3 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.menu-item-dots {
+  flex-grow: 1;
+  border-bottom: 1px dotted var(--muted);
+  margin: 0 20px;
+  opacity: 0.5;
+}
+
+.price {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.menu-item-info p {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 600px;
+  font-style: italic;
+}
+
+/* ===== СТРАНИЦА КОНТАКТОВ ===== */
+.contacts-container {
+  max-width: 1100px;
+  margin: 0 auto 120px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 100px;
+}
+
+.contact-info {
+  border-top: var(--border);
+  padding-top: 40px;
+}
+
+.contact-info h2, .booking-form h2 {
+  font-size: 36px;
+  margin-bottom: 40px;
+}
+
+.info-card {
+  margin-bottom: 40px;
+}
+
+.info-card h3 {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.info-card p {
+  font-size: 22px;
+  font-family: var(--font-head);
+  color: var(--text);
+}
+
+.booking-form {
+  border-top: var(--border);
+  padding-top: 40px;
+}
+
+.form-group {
+  margin-bottom: 32px;
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px 0;
+  font-family: var(--font-body);
+  font-size: 18px;
+  border: none;
+  border-bottom: 1px solid var(--muted);
+  background: transparent;
+  outline: none;
+  color: var(--text);
+  transition: border-color 0.3s;
+  border-radius: 0;
+}
+
+.form-group input::placeholder {
+  color: #C0BBB5;
+  font-style: italic;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-bottom-color: var(--accent);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.btn-book {
+  width: 100%;
+  background: var(--accent);
+  color: var(--surface);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 16px;
+}
+
+.btn-book:hover {
+  background: var(--text);
+}
+
+/* ===== ПОДВАЛ ===== */
+footer {
+  border-top: var(--border);
+  padding: 80px 40px;
+  text-align: center;
+  background: var(--bg);
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.footer-inner .logo {
+  text-align: center;
+  font-size: 28px;
+}
+
+.footer-inner p {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.footer-links a {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
+/* ===== АНИМАЦИИ ПОЯВЛЕНИЯ ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+
+/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
+@media (max-width: 900px) {
+  .header-inner {
+    flex-direction: column;
+    gap: 24px;
+  }
+  nav {
+    justify-content: center;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 80px 24px;
+    gap: 48px;
+  }
+  .hero-img {
+    height: 400px;
+  }
+  .hero-text {
+    padding-right: 0;
+  }
+  .philosophy p {
+    font-size: 24px;
+  }
+  .philosophy::before {
+    font-size: 120px;
+    top: 40px;
+  }
+  .contacts-container {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== ПРЕМИАЛЬНЫЙ КАЛЕНДАРЬ ===== */
+.flatpickr-calendar {
+  background: var(--surface) !important;
+  border: var(--border) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+  border-radius: 0 !important;
+  font-family: var(--font-ui) !important;
+  width: 300px !important;
+}
+
+.flatpickr-months {
+  background: var(--bg) !important;
+  border-bottom: var(--border) !important;
+  padding: 12px 0 !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+  font-family: var(--font-ui) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px !important;
+  color: var(--text) !important;
+}
+
+span.flatpickr-weekday {
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  text-transform: uppercase;
+  font-weight: 500 !important;
+}
+
+.flatpickr-day {
+  border-radius: 0 !important;
+  color: var(--text) !important;
+  font-size: 13px !important;
+}
+
+.flatpickr-day.selected {
+  background: var(--accent) !important;
+  color: var(--surface) !important;
+  border-color: var(--accent) !important;
+}

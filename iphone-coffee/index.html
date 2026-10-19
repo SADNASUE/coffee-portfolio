@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тёплый угол — кофе, ради которого хочется задержаться</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08070a;
+    --text: #f5ede4;
+    --muted: rgba(245, 237, 228, 0.6);
+    --accent: #ff9d4d;
+    --accent-2: #ffd166;
+    --accent-3: #ff4d8d;
+    --radius: 24px;
+    --shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.9);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ===== ФОН (Шум и сетка теперь ТОЛЬКО здесь) ===== */
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0; /* Самый нижний слой */
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* Плёночное зерно */
+  .bg-layer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.06;
+  }
+
+  /* Точечная сетка */
+  .bg-layer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  }
+
+  /* Размытые пятна */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    will-change: transform;
+  }
+  .blob-1 {
+    width: 620px; height: 620px;
+    background: radial-gradient(circle, #ff9d4d 0%, transparent 65%);
+    top: -180px; left: -140px;
+    opacity: 0.55;
+    animation: drift1 24s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, #ff4d8d 0%, transparent 65%);
+    bottom: -280px; right: -220px;
+    opacity: 0.4;
+    animation: drift2 28s ease-in-out infinite;
+  }
+  .blob-3 {
+    width: 540px; height: 540px;
+    background: radial-gradient(circle, #5b8dff 0%, transparent 65%);
+    top: 35%; left: 45%;
+    opacity: 0.35;
+    animation: drift3 32s ease-in-out infinite;
+  }
+  .blob-4 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, #ffd166 0%, transparent 65%);
+    top: 60%; right: 10%;
+    opacity: 0.25;
+    animation: drift1 26s ease-in-out infinite reverse;
+  }
+
+  @keyframes drift1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(120px, -80px) scale(1.15); }
+  }
+  @keyframes drift2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-100px, -120px) scale(0.9); }
+  }
+  @keyframes drift3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(80px, 100px) scale(1.2); }
+  }
+
+  /* ===== БАЗОВЫЕ СТИЛИ ===== */
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 10; /* Контент ВЫШЕ фона с шумом */
+  }
+
+  /* ЧЕТКОЕ ЛЕДЯНОЕ СТЕКЛО (Apple Style) */
+  .glass {
+    background: rgba(20, 20, 24, 0.6); /* Чуть плотнее фон, чтобы текст не сливался с шумом */
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius);
+    /* Внешняя глубокая тень + внутренний блик сверху (эффект глянца) */
+    box-shadow: 
+      var(--shadow), 
+      inset 0 1px 0 rgba(255, 255, 255, 0.3), 
+      inset 0 0 20px rgba(255, 255, 255, 0.03);
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .glass:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Отблеск на стекле */
+  .shine { overflow: hidden; }
+  .shine::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    transition: background-position 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 2;
+  }
+  .shine:hover::before { background-position: -50% 0; }
+
+  /* 3D-наклон */
+  .tilt {
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .tilt.tilting {
+    transition: transform 0.08s linear;
+  }
+  .tilt > .lift {
+    transform: translateZ(40px);
+    transform-style: preserve-3d;
+  }
+
+  /* ===== НАВИГАЦИЯ ===== */
+  nav.top-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: calc(100% - 40px);
+    max-width: 1140px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(15, 15, 18, 0.6);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 100px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  nav.top-nav.scrolled {
+    background: rgba(10, 10, 12, 0.9);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .logo {
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo::before {
+    content: "";
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 12px rgba(255, 157, 77, 0.8);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 26px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s, box-shadow 0.25s, color 0.25s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, #ff7a2f 100%);
+    color: #0a0806;
+    font-weight: 700;
+    box-shadow: 0 8px 28px -8px rgba(255, 157, 77, 0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 14px 40px -8px rgba(255, 157, 77, 0.8), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+
+  .btn-ghost {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+  }
+
+  /* burger */
+  .burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 110;
+  }
+  .burger span {
+    display: block;
+    width: 24px; height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.active span:nth-child(2) { opacity: 0; }
+  .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 140px 0 100px;
+    perspective: 1400px;
+    position: relative;
+  }
+
+  .hero-card {
+    padding: 56px;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 48px;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Отражение под карточкой — "лёд" */
+  .hero-card::after {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: -60px;
+    height: 120px;
+    background: radial-gradient(ellipse at center, rgba(255, 157, 77, 0.4), transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 28px;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .hero-badge::before {
+    content: "";
+    width: 8px; height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #4ade80;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 5.5vw, 66px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 900;
+    margin-bottom: 24px;
+    background: linear-gradient(180deg, #ffffff 0%, #f5ede4 50%, rgba(245,237,228,0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 60%, var(--accent-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(255, 157, 77, 0.5));
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .orb {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 157, 77, 0.6), rgba(255, 77, 141, 0.4) 40%, transparent 70%);
+    filter: blur(40px);
+    animation: orb-breathe 6s ease-in-out infinite;
+  }
+  @keyframes orb-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
+  .orb-glass {
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.02) 60%, transparent 80%);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    box-shadow:
+      inset 0 0 60px rgba(255, 157, 77, 0.3),
+      0 0 80px rgba(255, 157, 77, 0.4),
+      inset -20px -20px 60px rgba(255, 77, 141, 0.15);
+    z-index: 2;
+  }
+
+  .cup {
+    position: relative;
+    font-size: 130px;
+    z-index: 3;
+    filter: drop-shadow(0 20px 60px rgba(255, 157, 77, 0.6));
+    animation: cup-float 5s ease-in-out infinite;
+  }
+  @keyframes cup-float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--accent-2);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent-2);
+    animation: sparkle 3s ease-in-out infinite;
+  }
+  .sparkle.s1 { top: 15%; left: 20%; animation-delay: 0s; }
+  .sparkle.s2 { top: 25%; right: 15%; animation-delay: 0.7s; }
+  .sparkle.s3 { bottom: 20%; left: 25%; animation-delay: 1.4s; width: 4px; height: 4px; }
+  .sparkle.s4 { bottom: 30%; right: 20%; animation-delay: 2.1s; width: 5px; height: 5px; }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* ===== СЕКЦИИ ===== */
+  section { padding: 80px 0; perspective: 1400px; position: relative; }
+
+  .section-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 56px;
+  }
+  .section-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(255, 157, 77, 0.08);
+    border: 1px solid rgba(255, 157, 77, 0.2);
+  }
+  .section-head h2 {
+    font-size: clamp(28px, 4vw, 46px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #ffffff, rgba(245,237,228,0.75));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .section-head p {
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* ===== МЕНЮ ===== */
+  .menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .menu-card {
+    padding: 36px 28px;
+    cursor: default;
+  }
+
+  .menu-card .emoji {
+    display: inline-block;
+    font-size: 42px;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 0 24px rgba(255, 157, 77, 0.5));
+  }
+
+  .menu-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .menu-card p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .menu-card .price {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ===== О НАС ===== */
+  .about-card {
+    padding: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .about-visual {
+    aspect-ratio: 1;
+    border-radius: 20px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 157, 77, 0.35), rgba(255, 77, 141, 0.15) 50%, transparent 80%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 120px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: inset 0 0 80px rgba(255, 157, 77, 0.1);
+  }
+  .about-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 80%, rgba(91, 141, 255, 0.25), transparent 60%);
+  }
+  .about-visual span {
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 30px rgba(255, 157, 77, 0.6));
+  }
+
+  .about h2 {
+    font-size: clamp(26px, 3.5vw, 38px);
+    line-height: 1.1;
+    font-weight: 800;
+    margin: 12px 0 20px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #fff, rgba(245,237,228,0.75));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .about p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  .features {
+    list-style: none;
+  }
+  .features li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .features li:last-child { border-bottom: none; }
+  .features li::before {
+    content: "✓";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #0a0806;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 0 16px rgba(255, 157, 77, 0.5);
+  }
+
+  /* ===== КОНТАКТЫ ===== */
+  .contacts-card {
+    padding: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 56px;
+  }
+
+  .contact-info h3 {
+    font-size: 22px;
+    margin-bottom: 28px;
+    font-weight: 700;
+  }
+  .contact-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 22px;
+    align-items: center;
+  }
+  .contact-item .ico {
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    background: rgba(255, 157, 77, 0.1);
+    border: 1px solid rgba(255, 157, 77, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 20px rgba(255, 157, 77, 0.15);
+  }
+  .contact-item strong {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .contact-item a, .contact-item span {
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-item a:hover { color: var(--accent); }
+
+  form.contact-form {
+    display: flex;
+    flex-direction: column;
+  }
+  form.contact-form h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  form.contact-form > p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.3); /* Темнее, чтобы выделялось на фоне стекла */
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: rgba(245, 237, 228, 0.3);
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(0,0,0,0.4);
+    box-shadow: 0 0 0 4px rgba(255, 157, 77, 0.1), inset 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .form-group textarea { resize: vertical; min-height: 96px; }
+  form.contact-form .btn-primary {
+    width: 100%;
+    padding: 16px;
+    margin-top: 8px;
+    font-size: 15px;
+  }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .form-success.show { display: block; }
+  .form-success .check {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: white;
+    font-size: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 40px rgba(74, 222, 128, 0.5), inset 0 2px 0 rgba(255,255,255,0.4);
+    animation: checkIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes checkIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+  .form-success h4 { font-size: 20px; margin-bottom: 8px; }
+  .form-success p { color: var(--muted); font-size: 14px; }
+
+  /* ===== ПОДВАЛ ===== */
+  footer {
+    padding: 60px 0 40px;
+    position: relative;
+    z-index: 10;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ===== МОБИЛКА ===== */
+  @media (max-width: 900px) {
+    .burger { display: flex; }
+    .nav-links {
+      position: fixed;
+      top: 84px;
+      left: 20px;
+      right: 20px;
+      background: rgba(15, 15, 18, 0.95);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 20px;
+      gap: 4px;
+      opacity: 0;
+      transform: translateY(-12px);
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    }
+    .nav-links.open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .nav-links a {
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.05); }
+    .nav-links .btn { margin-top: 8px; }
+
+    .hero { padding: 120px 0 40px; }
+    .hero-card {
+      padding: 32px 24px;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .hero-visual {
+      order: -1;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    .cup { font-size: 90px; }
+
+    section { padding: 56px 0; }
+    .section-head { margin-bottom: 40px; }
+
+    .about-card {
+      padding: 32px 24px;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .about-visual {
+      max-width: 280px;
+      margin: 0 auto;
+      font-size: 80px;
+    }
+
+    .contacts-card {
+      padding: 32px 24px;
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .tilt { transform: none !important; }
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 0 18px; }
+    nav.top-nav { padding: 10px 16px; }
+    .hero h1 { font-size: 32px; }
+    .menu-card { padding: 28px 22px; }
+    .hero-actions .btn { flex: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* =========================================
+   ОПТИМИЗАЦИЯ ДЛЯ МОБИЛЬНЫХ И СЛАБЫХ УСТРОЙСТВ
+   ========================================= */
+
+/* Если экран меньше 900px ИЛИ устройство не поддерживает hover (телефоны) */
+@media (max-width: 900px), (hover: none) {
+  
+  /* 1. Убираем тяжелый блюр у стекла и делаем фон плотным */
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(20, 20, 24, 0.95) !important; /* Почти непрозрачный фон */
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8) !important; /* Упрощаем тень */
+  }
+
+  /* 2. Отключаем тяжелый блюр на навигации */
+  nav.top-nav {
+    background: rgba(15, 15, 18, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* 3. Отключаем анимацию пятен и уменьшаем радиус размытия (это сильно грузит ЦП) */
+  .blob {
+    animation: none !important;
+    filter: blur(60px) !important;
+  }
+  
+  /* 4. Убираем SVG-шум с фона (вызывает лаги при скролле) */
+  .bg-layer::before {
+    display: none !important;
+  }
+  
+  /* 5. Отключаем 3D-перспективу (чтобы не грузить композитный слой) */
+  .hero, section {
+    perspective: none !important;
+  }
+  
+  .tilt {
+    transform: none !important;
+  }
+  
+  /* 6. Убираем тяжелые внутренние блики (inset) у кнопок и сферы */
+  .btn-primary, .btn-ghost, .orb-glass {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ФОНОВЫЙ СЛОЙ (Шум и сетка только здесь) -->
+<div class="bg-layer">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+
+<!-- Навигация -->
+<nav class="top-nav" id="topNav">
+  <a href="#" class="logo">Тёплый угол</a>
+  <div class="nav-links" id="navLinks">
+    <a href="#menu">Меню</a>
+    <a href="#about">О нас</a>
+    <a href="#contacts">Контакты</a>
+    <a href="#contacts" class="btn btn-primary">Забронировать</a>
+  </div>
+  <button class="burger" id="burger" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<main class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-card glass shine tilt reveal" id="heroCard">
+      <div class="lift">
+        <span class="hero-badge">Открыто · 8:00 – 22:00</span>
+        <h1>Кофе, ради которого хочется <em>задержаться</em></h1>
+        <p>Своя обжарка, честные цены и место, где можно просто побыть. Заходите за чашкой — или оставайтесь подольше.</p>
+        <div class="hero-actions">
+          <a href="#menu" class="btn btn-primary">Смотреть меню</a>
+          <a href="#contacts" class="btn btn-ghost">Забронировать столик</a>
+        </div>
+      </div>
+      <div class="hero-visual lift">
+        <div class="orb"></div>
+        <div class="orb-glass"></div>
+        <div class="cup">☕</div>
+        <div class="sparkle s1"></div>
+        <div class="sparkle s2"></div>
+        <div class="sparkle s3"></div>
+        <div class="sparkle s4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- МЕНЮ -->
+  <section id="menu">
+    <div class="section-head reveal">
+      <span class="section-tag">Меню</span>
+      <h2>Что у нас есть</h2>
+      <p>Классика, авторские напитки и что-нибудь к кофе. Всё свежее — с утра.</p>
+    </div>
+    <div class="menu">
+      <div class="menu-card glass shine tilt reveal">
+        <div class="lift">
+          <span class="emoji">☕</span>
+          <h3>Эспрессо</h3>
+          <p>Плотный, насыщенный, из свежей обжарки. Классика жанра.</p>
+          <div class="price">150 ₽</div>
+        </div>
+      </div>
+      <div class="menu-card glass shine tilt reveal">
+        <div class="lift">
+          <span class="emoji">🥛</span>
+          <h3>Капучино</h3>
+          <p>Молочная пенка, правильная температура, уют в каждой чашке.</p>
+          <div class="price">220 ₽</div>
+        </div>
+      </div>
+      <div class="menu-card glass shine tilt reveal">
+        <div class="lift">
+          <span class="emoji">🍯</span>
+          <h3>Раф медовый</h3>
+          <p>Наш авторский: сливки, мёд, щепотка корицы. Тёплый и мягкий.</p>
+          <div class="price">280 ₽</div>
+        </div>
+      </div>
+      <div class="menu-card glass shine tilt reveal">
+        <div class="lift">
+          <span class="emoji">🥐</span>
+          <h3>Круассан</h3>
+          <p>Хрустящий снаружи, нежный внутри. Пекут каждое утро рядом с нами.</p>
+          <div class="price">190 ₽</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- О НАС -->
+  <section id="about" class="about">
+    <div class="about-card glass reveal">
+      <div class="about-visual">
+        <span>☕</span>
+      </div>
+      <div>
+        <span class="section-tag">О нас</span>
+        <h2>Маленькая кофейня с большим сердцем</h2>
+        <p>Мы открылись в 2019 году с одной идеей: делать честный кофе без пафоса и переплат. С тех пор у нас появились свои зёрна, свои люди и свой уютный угол в центре города.</p>
+        <ul class="features">
+          <li>Своя обжарка зёрен каждую неделю</li>
+          <li>Альтернативные молоко и сиропы без доплат</li>
+          <li>Wi-Fi и розетки у каждого столика</li>
+          <li>Детское меню и место для колясок</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- КОНТАКТЫ -->
+  <section id="contacts">
+    <div class="section-head reveal">
+      <span class="section-tag">Контакты</span>
+      <h2>Заходите в гости</h2>
+      <p>Или оставьте заявку — мы перезвоним и всё расскажем.</p>
+    </div>
+    <div class="contacts-card glass reveal">
+      <div class="contact-info">
+        <h3>Как нас найти</h3>
+        <div class="contact-item">
+          <div class="ico">📍</div>
+          <div>
+            <strong>Адрес</strong>
+            <span>г. Москва, ул. Тёплая, 14</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ico">📞</div>
+          <div>
+            <strong>Телефон</strong>
+            <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ico">🕐</div>
+          <div>
+            <strong>Часы работы</strong>
+            <span>Ежедневно с 8:00 до 22:00</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ico">✉️</div>
+          <div>
+            <strong>Почта</strong>
+            <a href="mailto:hello@teplyugol.ru">hello@teplyugol.ru</a>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm">
+        <h3>Забронировать столик</h3>
+        <p>Оставьте заявку — перезвоним в течение 15 минут.</p>
+        <div class="form-group">
+          <label for="name">Ваше имя</label>
+          <input type="text" id="name" name="name" placeholder="Как к вам обращаться" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Телефон</label>
+          <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Комментарий</label>
+          <textarea id="message" name="message" placeholder="На сколько человек, на какое время"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить заявку</button>
+      </form>
+
+      <div class="form-success" id="formSuccess" style="grid-column: 1 / -1;">
+        <div class="check">✓</div>
+        <h4>Спасибо! Заявка принята</h4>
+        <p>Мы перезвоним вам в течение 15 минут.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="#" class="logo">Тёплый угол</a>
+      <div class="footer-links">
+        <a href="#menu">Меню</a>
+        <a href="#about">О нас</a>
+        <a href="#contacts">Контакты</a>
+      </div>
+      <div>© 2025 Тёплый угол</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ===== Nav scroll =====
+  const topNav = document.getElementById('topNav');
+  window.addEventListener('scroll', () => {
+    topNav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // ===== Burger =====
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('active');
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      burger.classList.remove('active');
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // ===== Reveal on scroll =====
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 70);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ===== 3D Tilt =====
+  const isTouch = matchMedia('(hover: none)').matches;
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!isTouch && !prefersReduced) {
+    document.querySelectorAll('.tilt').forEach(el => {
+      const max = el.id === 'heroCard' ? 5 : 8;
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        el.classList.add('tilting');
+        el.style.transform =
+          `perspective(1100px) rotateY(${x * max}deg) rotateX(${-y * max}deg)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.classList.remove('tilting');
+        el.style.transform = '';
+      });
+    });
+  }
+
+  // ===== Phone mask =====
+  const phoneInput = document.getElementById('phone');
+  phoneInput.addEventListener('input', (e) => {
+    let digits = e.target.value.replace(/\D/g, '');
+    if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+    if (!digits.startsWith('7')) digits = '7' + digits;
+    digits = digits.slice(0, 11);
+    let out = '+7';
+    if (digits.length > 1) out += ' (' + digits.slice(1, 4);
+    if (digits.length >= 5) out += ') ' + digits.slice(4, 7);
+    if (digits.length >= 8) out += '-' + digits.slice(7, 9);
+    if (digits.length >= 10) out += '-' + digits.slice(9, 11);
+    e.target.value = out;
+  });
+
+  // ===== Form =====
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.style.display = 'none';
+    success.classList.add('show');
+  });
+</script>
+
+</body>
+</html>

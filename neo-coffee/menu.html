@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тёплый угол — Меню</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">ТЁПЛЫЙ УГОЛ</a>
+      <nav>
+        <a href="index.html">Главная</a>
+        <a href="menu.html" class="active">Меню</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="menu-header">
+    <h1>НАШЕ МЕНЮ</h1>
+    <p>Без соплей. Только то, что реально бодрит.</p>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">ВСЁ</button>
+    <button class="filter-btn" data-filter="coffee">КОФЕ</button>
+    <button class="filter-btn" data-filter="not-coffee">НЕ КОФЕ</button>
+    <button class="filter-btn" data-filter="food">ЕДА</button>
+  </div>
+
+  <div class="menu-grid">
+    <!-- Кофе -->
+    <div class="menu-item" data-category="coffee">
+      <div class="menu-item-img">☕</div>
+      <div class="menu-item-info">
+        <h3>ЭСПРЕССО</h3>
+        <p>Плотный, как кирпич. 30 мл чистого заряда.</p>
+        <div class="menu-item-footer">
+          <span class="price">150 ₽</span>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кофе -->
+    <div class="menu-item" data-category="coffee">
+      <div class="menu-item-img">🥛</div>
+      <div class="menu-item-info">
+        <h3>КАПУЧИНО</h3>
+        <p>Молочная пенка, правильная температура. 250 мл.</p>
+        <div class="menu-item-footer">
+          <span class="price">220 ₽</span>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кофе -->
+    <div class="menu-item" data-category="coffee">
+      <div class="menu-item-img">🍯</div>
+      <div class="menu-item-info">
+        <h3>РАФ МЕДОВЫЙ</h3>
+        <p>Сливки, мёд, корица. Сладко, но не приторно.</p>
+        <div class="menu-item-footer">
+          <span class="price">280 ₽</span>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Еда -->
+    <div class="menu-item" data-category="food">
+      <div class="menu-item-img">🥐</div>
+      <div class="menu-item-info">
+        <h3>КРУАССАН</h3>
+        <p>Хрустящий. Пекут каждое утро прямо рядом.</p>
+        <div class="menu-item-footer">
+          <span class="price">190 ₽</span>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кофе -->
+    <div class="menu-item" data-category="coffee">
+      <div class="menu-item-img">🧊</div>
+      <div class="menu-item-info">
+        <h3>АЙС ЛАТТЕ</h3>
+        <p>Холодный, бодрящий. Со льдом и без сахара.</p>
+        <div class="menu-item-footer">
+          <span class="price">240 ₽</span>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Не кофе -->
+    <div class="menu-item" data-category="not-coffee">
+      <div class="menu-item-img">🍵</div>
+      <div class="menu-item-info">
+        <h3>МАТЧА</h3>
+        <p>Для тех, кто не пьёт кофе, но хочет быть в теме.</p>
+        <div class="menu-item-footer">
+          <span class="price">260 ₽</span>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h3 style="margin-bottom: 8px;">ТЁПЛЫЙ УГОЛ</h3>
+        <p>г. Москва, ул. Тёплая, 14</p>
+        <p>+7 (495) 123-45-67</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Главная</a>
+        <a href="menu.html">Меню</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="#">Наверх ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Логика фильтрации меню
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Переключаем активный класс на кнопках
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filterValue = btn.getAttribute('data-filter');
+
+        // Показываем/скрываем карточки
+        menuItems.forEach(item => {
+          if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

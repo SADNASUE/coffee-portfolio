@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тёплый угол — Контакты</title>
+  
+  <!-- Подключаем библиотеку календаря Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">ТЁПЛЫЙ УГОЛ</a>
+      <nav>
+        <a href="index.html">Главная</a>
+        <a href="menu.html">Меню</a>
+        <a href="contacts.html" class="active">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="menu-header">
+    <h1>КОНТАКТЫ</h1>
+    <p>Приходи или пиши. Мы на связи.</p>
+  </div>
+
+  <div class="contacts-container">
+    <div class="contact-info">
+      <h2>ГДЕ МЫ</h2>
+      <div class="info-card">
+        <h3>АДРЕС</h3>
+        <p>г. Москва, ул. Тёплая, 14</p>
+      </div>
+      <div class="info-card">
+        <h3>ТЕЛЕФОН</h3>
+        <p>+7 (495) 123-45-67</p>
+      </div>
+      <div class="info-card">
+        <h3>ВРЕМЯ</h3>
+        <p>Ежедневно 8:00 – 22:00</p>
+      </div>
+      <div class="info-card" style="background: var(--accent-cyan);">
+        <h3>ПОЧТА</h3>
+        <p>hello@teplyugol.ru</p>
+      </div>
+    </div>
+
+    <div class="booking-form">
+      <h2>БРОНЬ СТОЛИКА</h2>
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="name">ИМЯ</label>
+          <input type="text" id="name" placeholder="Как тебя зовут?" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">ТЕЛЕФОН</label>
+          <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" required>
+        </div>
+        <div class="form-group">
+          <label for="guests">КОЛИЧЕСТВО ГОСТЕЙ</label>
+          <select id="guests">
+            <option>1-2 человека</option>
+            <option>3-4 человека</option>
+            <option>5+ человек (вечеринка!)</option>
+          </select>
+        </div>
+        
+        <!-- ОБНОВЛЕННЫЙ БЛОК ДАТЫ И ВРЕМЕНИ -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">ДАТА</label>
+            <!-- Меняем type="date" на text, чтобы убрать системное окно -->
+            <input type="text" id="date" placeholder="ВЫБЕРИ ДАТУ" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="time">ВРЕМЯ</label>
+            <!-- Делаем красивый селект для времени -->
+            <select id="time" required>
+              <option value="" disabled selected>ВЫБЕРИ ВРЕМЯ</option>
+              <option>08:00</option>
+              <option>09:00</option>
+              <option>10:00</option>
+              <option>11:00</option>
+              <option>12:00</option>
+              <option>13:00</option>
+              <option>14:00</option>
+              <option>15:00</option>
+              <option>16:00</option>
+              <option>17:00</option>
+              <option>18:00</option>
+              <option>19:00</option>
+              <option>20:00</option>
+              <option>21:00</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">ЗАБРОНИРОВАТЬ</button>
+      </form>
+      
+      <div id="formSuccess" style="display: none; text-align: center; margin-top: 20px; background: var(--accent-cyan); padding: 24px; border: var(--border); box-shadow: var(--shadow);">
+        <h3 style="font-size: 28px; margin-bottom: 12px;">ЗАЯВКА ПРИНЯТА!</h3>
+        <p style="font-weight: 700; font-size: 18px;">Мы перезвоним в течение 15 минут.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h3 style="margin-bottom: 8px;">ТЁПЛЫЙ УГОЛ</h3>
+        <p>г. Москва, ул. Тёплая, 14</p>
+        <p>+7 (495) 123-45-67</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Главная</a>
+        <a href="menu.html">Меню</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="#">Наверх ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Подключаем JS календаря -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <!-- Русская локализация для календаря -->
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
+
+  <script>
+    // Инициализация брутального календаря
+    flatpickr("#date", {
+      locale: "ru",
+      dateFormat: "d.m.Y",
+      minDate: "today", // Нельзя выбрать прошедшую дату
+      disableMobile: true // Отключаем системный календарь на телефонах
+    });
+
+    // Маска телефона
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', (e) => {
+      let digits = e.target.value.replace(/\D/g, '');
+      if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+      if (!digits.startsWith('7')) digits = '7' + digits;
+      digits = digits.slice(0, 11);
+      let out = '+7';
+      if (digits.length > 1) out += ' (' + digits.slice(1, 4);
+      if (digits.length >= 5) out += ') ' + digits.slice(4, 7);
+      if (digits.length >= 8) out += '-' + digits.slice(7, 9);
+      if (digits.length >= 10) out += '-' + digits.slice(9, 11);
+      e.target.value = out;
+    });
+
+    // Отправка формы
+    const form = document.getElementById('bookingForm');
+    const success = document.getElementById('formSuccess');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.style.display = 'none';
+      success.style.display = 'block';
+    });
+  </script>
+
+</body>
+</html>
